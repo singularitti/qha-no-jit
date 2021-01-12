@@ -44,7 +44,10 @@ def ho_free_energy(temperature, frequency):
 
     hw = HBAR * frequency
     kt = K * temperature
-    return 1 / 2 * hw + kt * np.log(1 - np.exp(-hw / kt))
+    if temperature == 0:
+        return 1 / 2 * hw
+    else:
+        return 1 / 2 * hw + kt * np.log(1 - np.exp(-hw / kt))
 
 
 @vectorize
