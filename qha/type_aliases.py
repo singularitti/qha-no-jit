@@ -14,13 +14,16 @@
 .. moduleauthor:: Qi Zhang <qz2280@columbia.edu>
 """
 
-from numba import float64
+from typing import Any
+
+import numpy as np
+from nptyping import NDArray
 
 # ===================== What can be exported? =====================
 __all__ = ['Scalar', 'Vector', 'Matrix', 'Array3D', 'Array4D']
 
-Scalar = float64  # 0-dimensional float
-Vector = float64[:]  # 1-dimensional floats
-Matrix = float64[:, :]  # 2-dimensional floats
-Array3D = float64[:, :, :]  # 3-dimensional floats
-Array4D = float64[:, :, :, :]  # 4-dimensional floats
+Scalar = np.float64  # 0-dimensional float
+Vector = NDArray[(Any,), np.float64]  # 1-dimensional floats
+Matrix = NDArray[(Any, Any), np.float64]  # 2-dimensional floats
+Array3D = NDArray[(Any, Any, Any), np.float64]  # 3-dimensional floats
+Array4D = NDArray[(Any, Any, Any, Any), np.float64]  # 4-dimensional floats
