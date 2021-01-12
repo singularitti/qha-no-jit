@@ -10,7 +10,7 @@
 from typing import Callable, Optional
 
 import numpy as np
-from numba import float64, guvectorize, int64, jit, vectorize
+from numpy import vectorize
 
 from qha.fitting import polynomial_least_square_fitting
 from qha.grid_interpolation import calculate_eulerian_strain
@@ -38,7 +38,7 @@ def lagrange4(xs: Vector, ys: Vector) -> Callable[[float], float]:
     x0, x1, x2, x3 = xs
     y0, y1, y2, y3 = ys
 
-    @vectorize(["float64(float64)"], target='parallel')
+    @vectorize
     def f(x: float) -> float:
         """
         A helper function that only does the evaluation.
@@ -49,7 +49,8 @@ def lagrange4(xs: Vector, ys: Vector) -> Callable[[float], float]:
         return (x - x1) * (x - x2) * (x - x3) / (x0 - x1) / (x0 - x2) / (x0 - x3) * y0 + \
                (x - x0) * (x - x2) * (x - x3) / (x1 - x0) / (x1 - x2) / (x1 - x3) * y1 + \
                (x - x0) * (x - x1) * (x - x3) / (x2 - x0) / (x2 - x1) / (x2 - x3) * y2 + \
-               (x - x0) * (x - x1) * (x - x2) / (x3 - x0) / (x3 - x1) / (x3 - x2) * y3
+               (x - x0) * (x - x1) * (x - x2) / \
+            (x3 - x0) / (x3 - x1) / (x3 - x2) * y3
 
     return f
 
@@ -82,7 +83,7 @@ def lagrange3(xs: Vector, ys: Vector) -> Callable[[float], float]:
     x0, x1, x2 = xs
     y0, y1, y2 = ys
 
-    @vectorize(["float64(float64)"], target='parallel')
+    @vectorize
     def f(x: float) -> float:
         """
         A helper function that only does the evaluation.
@@ -97,7 +98,6 @@ def lagrange3(xs: Vector, ys: Vector) -> Callable[[float], float]:
     return f
 
 
-@jit(nopython=True, nogil=True, cache=True)
 def find_nearest(array: Vector, value: Scalar) -> int:
     """
     Given an *array* , and given a *value* , returns an index ``j`` such that *value* is between ``array[j]``
@@ -140,7 +140,7 @@ def find_nearest(array: Vector, value: Scalar) -> int:
     return j_low
 
 
-@guvectorize([(float64[:], float64[:], int64[:])], '(m),(n)->(n)')
+@vectorize
 def vectorized_find_nearest(array: Vector, values: Vector, result: Vector):
     """
     A vectorized version of function ``find_nearest``.
@@ -153,7 +153,8 @@ def vectorized_find_nearest(array: Vector, values: Vector, result: Vector):
     n: int = len(array)
 
     if len(values) != len(result):
-        raise ValueError('The *values* and *result* arguments should have same length!')
+        raise ValueError(
+            'The *values* and *result* arguments should have same length!')
 
     for i in range(len(values)):
 
@@ -250,7 +251,8 @@ def calibrate_energy_on_reference(volumes_before_calibration: Matrix, energies_b
     for i in range(configurations_amount):
         strains_before_calibration = calculate_eulerian_strain(volumes_before_calibration[i, 0],
                                                                volumes_before_calibration[i])
-        strains_after_calibration = calculate_eulerian_strain(volumes_before_calibration[i, 0], volumes_for_reference)
+        strains_after_calibration = calculate_eulerian_strain(
+            volumes_before_calibration[i, 0], volumes_for_reference)
         _, energies_after_calibration[i, :] = polynomial_least_square_fitting(strains_before_calibration,
                                                                               energies_before_calibration[i],
                                                                               strains_after_calibration,

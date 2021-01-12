@@ -11,7 +11,7 @@
 from typing import Optional, Tuple
 
 import numpy as np
-from numba import vectorize, float64
+from numpy import vectorize
 
 from qha.fitting import polynomial_least_square_fitting, apply_finite_strain_fitting
 from qha.type_aliases import Vector, Matrix
@@ -26,7 +26,7 @@ __all__ = [
 ]
 
 
-@vectorize([float64(float64, float64)], nopython=True)
+@vectorize
 def calculate_eulerian_strain(v0, vs):
     """
     Calculate the Eulerian strain (:math:`f`s) of a given volume vector *vs* with respect to a reference volume *v0*,
@@ -43,7 +43,7 @@ def calculate_eulerian_strain(v0, vs):
     return 1 / 2 * ((v0 / vs) ** (2 / 3) - 1)
 
 
-@vectorize([float64(float64, float64)], nopython=True)
+@vectorize
 def from_eulerian_strain(v0, fs):
     """
     Calculate the corresponding volumes :math:`V`s from a vector of given Eulerian strains (*fs*)
