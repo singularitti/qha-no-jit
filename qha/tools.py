@@ -140,7 +140,6 @@ def find_nearest(array: Vector, value: Scalar) -> int:
     return j_low
 
 
-@vectorize
 def vectorized_find_nearest(array: Vector, values: Vector, result: Vector):
     """
     A vectorized version of function ``find_nearest``.
