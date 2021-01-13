@@ -4,7 +4,6 @@
    :platform: Unix, Windows, Mac, Linux
 .. moduleauthor:: Qi Zhang <qz2280@columbia.edu>
 """
-
 from typing import Optional
 
 import numpy as np
@@ -13,9 +12,13 @@ from scipy.constants import physical_constants as pc
 from scipy.special import logsumexp
 
 import qha.settings
-from qha.statmech import ho_free_energy, log_subsystem_partition_function
+from qha.statmech import ho_free_energy
+from qha.statmech import log_subsystem_partition_function
 from qha.tools import calibrate_energy_on_reference
-from qha.type_aliases import Array3D, Matrix, Scalar, Vector
+from qha.type_aliases import Array3D
+from qha.type_aliases import Matrix
+from qha.type_aliases import Scalar
+from qha.type_aliases import Vector
 
 # ===================== What can be exported? =====================
 __all__ = ["PartitionFunction", "FreeEnergy"]
