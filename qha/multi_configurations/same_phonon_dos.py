@@ -15,7 +15,7 @@ from scipy.special import logsumexp
 import qha.settings
 from qha.statmech import ho_free_energy, log_subsystem_partition_function
 from qha.tools import calibrate_energy_on_reference
-from qha.type_aliases import Array3D, Scalar, Vector, Matrix
+from qha.type_aliases import Array3D, Matrix, Scalar, Vector
 
 # ===================== What can be exported? =====================
 __all__ = ["PartitionFunction", "FreeEnergy"]

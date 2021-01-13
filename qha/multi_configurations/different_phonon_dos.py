@@ -16,7 +16,7 @@ from scipy.special import logsumexp
 import qha.settings
 from qha.single_configuration import free_energy
 from qha.tools import calibrate_energy_on_reference
-from qha.type_aliases import Array4D, Scalar, Vector, Matrix
+from qha.type_aliases import Array4D, Matrix, Scalar, Vector
 
 # ===================== What can be exported? =====================
 __all__ = ["PartitionFunction"]
