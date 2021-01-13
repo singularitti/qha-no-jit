@@ -24,11 +24,15 @@ from qha.type_aliases import Vector
 __all__ = ["PartitionFunction", "FreeEnergy"]
 
 K = {
-    "ha": pc["Boltzmann constant in eV/K"][0] / pc["Hartree energy in eV"][0],
-    "ry": pc["Boltzmann constant in eV/K"][0]
-    / pc["Rydberg constant times hc in eV"][0],
-    "ev": pc["Boltzmann constant in eV/K"][0],
-    "SI": pc["Boltzmann constant"][0],
+    "ha":
+    pc["Boltzmann constant in eV/K"][0] / pc["Hartree energy in eV"][0],
+    "ry":
+    pc["Boltzmann constant in eV/K"][0] /
+    pc["Rydberg constant times hc in eV"][0],
+    "ev":
+    pc["Boltzmann constant in eV/K"][0],
+    "SI":
+    pc["Boltzmann constant"][0],
 }[qha.settings.energy_unit]
 
 
@@ -60,27 +64,27 @@ class PartitionFunction:
     """
 
     def __init__(
-        self,
-        temperature: Scalar,
-        degeneracies: Vector,
-        q_weights: Vector,
-        static_energies: Matrix,
-        frequencies: Array3D,
-        precision: Optional[int] = 500,
+            self,
+            temperature: Scalar,
+            degeneracies: Vector,
+            q_weights: Vector,
+            static_energies: Matrix,
+            frequencies: Array3D,
+            precision: Optional[int] = 500,
     ):
 
         if not np.all(np.greater_equal(degeneracies, 0)):
             raise ValueError(
-                "Degeneracies should all be integers greater equal than 0!"
-            )
+                "Degeneracies should all be integers greater equal than 0!")
         if not np.all(
-            np.greater_equal(q_weights, 0)
+                np.greater_equal(q_weights, 0)
         ):  # Weights should all be greater equal than 0, otherwise sum will be wrong.
             raise ValueError("Weights should all be greater equal than 0!")
 
         self.frequencies = np.array(frequencies)
         if self.frequencies.ndim != 3:
-            raise ValueError("*frequencies* must be a three-dimensional array!")
+            raise ValueError(
+                "*frequencies* must be a three-dimensional array!")
 
         if temperature < 1e-6:
             self.temperature = 1e-6
@@ -103,22 +107,18 @@ class PartitionFunction:
             import mpmath
         except ImportError:
             raise ImportError(
-                "You need to install ``mpmath`` package to use {0} object!".format(
-                    self.__class__.__name__
-                )
-            )
+                "You need to install ``mpmath`` package to use {0} object!".
+                format(self.__class__.__name__))
 
         with mpmath.workprec(self.precision):
-            return np.array(
-                [
-                    mpmath.exp(d)
-                    for d in logsumexp(  # shape = (# of volumes for each configuration, 1)
-                        -self.static_energies / (K * self.temperature),
-                        axis=1,
-                        b=self.degeneracies,
-                    )
-                ]
-            )
+            return np.array([
+                mpmath.exp(d) for d in
+                logsumexp(  # shape = (# of volumes for each configuration, 1)
+                    -self.static_energies / (K * self.temperature),
+                    axis=1,
+                    b=self.degeneracies,
+                )
+            ])
 
     @property
     def _harmonic_part(self) -> Vector:
@@ -128,7 +128,8 @@ class PartitionFunction:
         :return: The harmonic contribution on the temperature-volume grid.
         """
         log_product_modes: Matrix = np.sum(
-            log_subsystem_partition_function(self.temperature, self.frequencies),
+            log_subsystem_partition_function(self.temperature,
+                                             self.frequencies),
             axis=2,
             dtype=float,
         )
@@ -143,8 +144,8 @@ class PartitionFunction:
         :return: The partition function on the temperature-volume grid.
         """
         return np.multiply(
-            self._static_part, self._harmonic_part
-        )  # (vol, 1), product element-wise
+            self._static_part,
+            self._harmonic_part)  # (vol, 1), product element-wise
 
     def get_free_energies(self):
         """
@@ -161,9 +162,7 @@ class PartitionFunction:
         except ImportError:
             raise ImportError(
                 "Install ``mpmath`` package to use {0} object!".format(
-                    self.__class__.__name__
-                )
-            )
+                    self.__class__.__name__))
 
         with mpmath.workprec(self.precision):
             log_z = np.array([mpmath.log(d) for d in self.total], dtype=float)
@@ -200,28 +199,28 @@ class FreeEnergy:
     """
 
     def __init__(
-        self,
-        temperature: Scalar,
-        degeneracies: Vector,
-        q_weights: Vector,
-        static_energies: Matrix,
-        volumes: Matrix,
-        frequencies: Array3D,
-        static_only: Optional[bool] = False,
-        order: Optional[int] = 3,
+            self,
+            temperature: Scalar,
+            degeneracies: Vector,
+            q_weights: Vector,
+            static_energies: Matrix,
+            volumes: Matrix,
+            frequencies: Array3D,
+            static_only: Optional[bool] = False,
+            order: Optional[int] = 3,
     ):
         if not np.all(np.greater_equal(degeneracies, 0)):
             raise ValueError(
-                "Degeneracies should all be integers greater equal than 0!"
-            )
+                "Degeneracies should all be integers greater equal than 0!")
         if not np.all(
-            np.greater_equal(q_weights, 0)
+                np.greater_equal(q_weights, 0)
         ):  # Weights should all be greater equal than 0, otherwise sum will be wrong.
             raise ValueError("Weights should all be greater equal than 0!")
 
         self.frequencies = np.array(frequencies)
         if self.frequencies.ndim != 3:
-            raise ValueError("*frequencies* must be a three-dimensional array!")
+            raise ValueError(
+                "*frequencies* must be a three-dimensional array!")
 
         if temperature < 1e-6:
             self.temperature = 1e-6
@@ -243,9 +242,8 @@ class FreeEnergy:
 
         :return: A matrix of aligned static energy of each configuration of each volume.
         """
-        return calibrate_energy_on_reference(
-            self.volumes, self.static_energies, self.order
-        )
+        return calibrate_energy_on_reference(self.volumes,
+                                             self.static_energies, self.order)
 
     @LazyProperty
     def static_part(self) -> Vector:
@@ -267,7 +265,8 @@ class FreeEnergy:
 
         :return: The harmonic contribution on the temperature-volume grid.
         """
-        sum_modes = np.sum(ho_free_energy(self.temperature, self.frequencies), axis=2)
+        sum_modes = np.sum(ho_free_energy(self.temperature, self.frequencies),
+                           axis=2)
         return np.dot(sum_modes, self._scaled_q_weights)
 
     @LazyProperty

@@ -24,11 +24,15 @@ from qha.type_aliases import Vector
 __all__ = ["PartitionFunction"]
 
 K = {
-    "ha": pc["Boltzmann constant in eV/K"][0] / pc["Hartree energy in eV"][0],
-    "ry": pc["Boltzmann constant in eV/K"][0]
-    / pc["Rydberg constant times hc in eV"][0],
-    "ev": pc["Boltzmann constant in eV/K"][0],
-    "SI": pc["Boltzmann constant"][0],
+    "ha":
+    pc["Boltzmann constant in eV/K"][0] / pc["Hartree energy in eV"][0],
+    "ry":
+    pc["Boltzmann constant in eV/K"][0] /
+    pc["Rydberg constant times hc in eV"][0],
+    "ev":
+    pc["Boltzmann constant in eV/K"][0],
+    "SI":
+    pc["Boltzmann constant"][0],
 }[qha.settings.energy_unit]
 
 
@@ -61,21 +65,22 @@ class PartitionFunction:
     """
 
     def __init__(
-        self,
-        temperature: Scalar,
-        degeneracies: Vector,
-        q_weights: Matrix,
-        static_energies: Matrix,
-        volumes: Matrix,
-        frequencies: Array4D,
-        static_only: Optional[bool] = False,
-        precision: Optional[int] = 500,
-        order: Optional[int] = 3,
+            self,
+            temperature: Scalar,
+            degeneracies: Vector,
+            q_weights: Matrix,
+            static_energies: Matrix,
+            volumes: Matrix,
+            frequencies: Array4D,
+            static_only: Optional[bool] = False,
+            precision: Optional[int] = 500,
+            order: Optional[int] = 3,
     ):
         if not np.all(np.greater_equal(degeneracies, 0)):
-            raise ValueError("Degeneracies should all be greater equal than 0!")
+            raise ValueError(
+                "Degeneracies should all be greater equal than 0!")
         if not np.all(
-            np.greater_equal(q_weights, 0)
+                np.greater_equal(q_weights, 0)
         ):  # Weights should all be greater equal than 0, otherwise sum will be wrong.
             raise ValueError("Weights should all be greater equal than 0!")
 
@@ -85,7 +90,8 @@ class PartitionFunction:
 
         self.static_energies = np.array(static_energies)
         if self.static_energies.ndim != 2:
-            raise ValueError("*static_energies* must be a two-dimensional array!")
+            raise ValueError(
+                "*static_energies* must be a two-dimensional array!")
 
         if temperature < 1e-1:
             self.temperature = 1
@@ -108,18 +114,15 @@ class PartitionFunction:
         :return: A matrix, the "raw" free energy of each configuration of each volume.
         """
         configurations_amount, _ = self.volumes.shape
-        return np.array(
-            [
-                free_energy(
-                    self.temperature,
-                    self.q_weights[i],
-                    self.static_energies[i],
-                    self.frequencies[i],
-                    self.static_only,
-                )
-                for i in range(configurations_amount)
-            ]
-        )
+        return np.array([
+            free_energy(
+                self.temperature,
+                self.q_weights[i],
+                self.static_energies[i],
+                self.frequencies[i],
+                self.static_only,
+            ) for i in range(configurations_amount)
+        ])
 
     @LazyProperty
     def aligned_free_energies_for_each_configuration(self):
@@ -150,17 +153,13 @@ class PartitionFunction:
         except ImportError:
             raise ImportError(
                 "Install ``mpmath`` package to use {0} object!".format(
-                    self.__class__.__name__
-                )
-            )
+                    self.__class__.__name__))
 
         with mpmath.workprec(self.precision):
             # shape = (# of configurations, # of volumes for each configuration)
             exp = np.vectorize(mpmath.exp)
-            return exp(
-                -self.aligned_free_energies_for_each_configuration
-                / (K * self.temperature)
-            )
+            return exp(-self.aligned_free_energies_for_each_configuration /
+                       (K * self.temperature))
 
     @LazyProperty
     def partition_functions_for_all_configurations(self):
@@ -178,23 +177,18 @@ class PartitionFunction:
         except ImportError:
             raise ImportError(
                 "Install ``mpmath`` package to use {0} object!".format(
-                    self.__class__.__name__
-                )
-            )
+                    self.__class__.__name__))
 
         with mpmath.workprec(self.precision):
             # shape = (# of volumes,)
-            return np.array(
-                [
-                    mpmath.exp(d)
-                    for d in logsumexp(
-                        -self.aligned_free_energies_for_each_configuration.T
-                        / (K * self.temperature),
-                        axis=1,
-                        b=self.degeneracies,
-                    )
-                ]
-            )
+            return np.array([
+                mpmath.exp(d) for d in logsumexp(
+                    -self.aligned_free_energies_for_each_configuration.T /
+                    (K * self.temperature),
+                    axis=1,
+                    b=self.degeneracies,
+                )
+            ])
 
     def get_free_energies(self):
         """
@@ -211,9 +205,7 @@ class PartitionFunction:
         except ImportError:
             raise ImportError(
                 "Install ``mpmath`` package to use {0} object!".format(
-                    self.__class__.__name__
-                )
-            )
+                    self.__class__.__name__))
 
         with mpmath.workprec(self.precision):
             log_z = np.array(
