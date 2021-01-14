@@ -12,7 +12,7 @@ from qha.settings import from_yaml
 
 class TestPartitionFunction(unittest.TestCase):
     def setUp(self) -> None:
-        os.chdir('../../examples/ice VII/')
+        os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../examples/ice VII/'))
         self.user_settings = {}
         settings = from_yaml("settings.yaml")
 
@@ -77,3 +77,7 @@ class TestPartitionFunction(unittest.TestCase):
         np.testing.assert_array_almost_equal(self.partition_function.get_free_energies(),
                                              [-550.74580132, -550.70964062, -550.37436235, -549.87365787, -549.43586034,
                                               -549.03029969])
+
+
+if __name__ == '__main__':
+    unittest.main()

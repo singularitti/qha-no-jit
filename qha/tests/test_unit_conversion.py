@@ -13,8 +13,8 @@ from qha.unit_conversion import *
 
 class TestUnitConversion(unittest.TestCase):
     def test_j_to_ev(self):
-        self.assertEqual(j_to_ev(1), 6.241509125883258e+18)
-        self.assertEqual(j_to_ev(900), 5.617358213294932e+21)
+        self.assertAlmostEqual(j_to_ev(1), 6.241509125883258e+18, delta=5.2e10)
+        self.assertAlmostEqual(j_to_ev(900), 5.617358213294932e+21, delta=4.7e13)
 
     def test_gpa_to_megabar(self):
         self.assertEqual(gpa_to_megabar(1), 0.01)
@@ -25,20 +25,20 @@ class TestUnitConversion(unittest.TestCase):
         self.assertAlmostEqual(b3_to_a3(900), 133.366, places=3)
 
     def test_eh_to_cm_inverse(self):
-        self.assertEqual(eh_to_cm_inverse(1), 219474.6313702)
-        self.assertAlmostEqual(eh_to_cm_inverse(900), 1.9752716823318e8, places=5)
+        self.assertAlmostEqual(eh_to_cm_inverse(1), 219474.6313702, places=4)
+        self.assertAlmostEqual(eh_to_cm_inverse(900), 1.9752716823318e8, places=1)
 
     def test_ev_to_cm_inverse(self):
         self.assertAlmostEqual(ev_to_cm_inverse(1), 8065.540106923572, places=2)
         self.assertAlmostEqual(ev_to_cm_inverse(900), 7258986.096231216, places=-1)
 
     def test_ev_to_k(self):
-        self.assertAlmostEqual(ev_to_k(1), 11604.52500617, places=2)
+        self.assertAlmostEqual(ev_to_k(1), 11604.52500617, places=1)
         self.assertAlmostEqual(ev_to_k(900), 10444072.505553002, places=-2)
 
     def test_ev_a3_to_gpa(self):
-        self.assertAlmostEqual(ev_a3_to_gpa(1), 160.21766208, places=6)
-        self.assertAlmostEqual(ev_a3_to_gpa(900), 144195.895872)
+        self.assertAlmostEqual(ev_a3_to_gpa(1), 160.21766208, places=5)
+        self.assertAlmostEqual(ev_a3_to_gpa(900), 144195.895872, places=2)
 
     def test_ha_b3_to_gpa(self):
         self.assertAlmostEqual(ha_b3_to_gpa(1), 29421.02648438959, places=1)
@@ -53,8 +53,8 @@ class TestUnitConversion(unittest.TestCase):
         self.assertAlmostEqual(ha_b_to_ev_a(900), 46279.86036472072, places=1)
 
     def test_ry_to_kj_mol(self):
-        self.assertAlmostEqual(ry_to_kj_mol(1), 1312.7498191426082)
-        self.assertAlmostEqual(ry_to_kj_mol(900), 1181474.8372283475)
+        self.assertAlmostEqual(ry_to_kj_mol(1), 1312.7498191426082, places=5)
+        self.assertAlmostEqual(ry_to_kj_mol(900), 1181474.8372283475, places=2)
 
     def test_vectorize(self):
         """
