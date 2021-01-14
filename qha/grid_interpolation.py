@@ -118,9 +118,11 @@ class VolumeExpander:
     @out_volumes_num.setter
     def out_volumes_num(self, value: int):
         if not isinstance(value, int):
-            raise TypeError("The argument *out_volumes_num* must be an integer!")
+            raise TypeError(
+                "The argument *out_volumes_num* must be an integer!")
         if value <= 0:
-            raise ValueError("The argument *out_volumes_num* must be an integer larger than 0!")
+            raise ValueError(
+                "The argument *out_volumes_num* must be an integer larger than 0!")
         self._out_volumes_num = value
 
     @property
@@ -153,7 +155,8 @@ class VolumeExpander:
         # r = v_upper / v_max = v_min / v_lower
         v_lower, v_upper = v_min / self._ratio, v_max * self._ratio
         # The *v_max* is a reference value here.
-        s_upper, s_lower = calculate_eulerian_strain(v_max, v_lower), calculate_eulerian_strain(v_max, v_upper)
+        s_upper, s_lower = calculate_eulerian_strain(
+            v_max, v_lower), calculate_eulerian_strain(v_max, v_upper)
         self._strains = np.linspace(s_lower, s_upper, self._out_volumes_num)
         self._out_volumes = from_eulerian_strain(v_max, self._strains)
 
@@ -191,7 +194,8 @@ class FinerGrid:
         vr.interpolate_volumes()
         strains, finer_volumes = vr.strains, vr.out_volumes
         eulerian_strain = calculate_eulerian_strain(volumes[0], volumes)
-        _, f_v_tmax = polynomial_least_square_fitting(eulerian_strain, free_energies, strains, self.option)
+        _, f_v_tmax = polynomial_least_square_fitting(
+            eulerian_strain, free_energies, strains, self.option)
         p_v_tmax = -np.gradient(f_v_tmax) / np.gradient(finer_volumes)
         p_desire = gpa_to_ry_b3(self.desired_p_min)
         # Find the index of the first pressure value that slightly smaller than p_desire.
@@ -213,7 +217,8 @@ class FinerGrid:
         if ratio is not None:
             new_ratio: float = ratio
         else:
-            new_ratio = self.approach_to_best_ratio(volumes, free_energies[-1, :], 1.45)
+            new_ratio = self.approach_to_best_ratio(
+                volumes, free_energies[-1, :], 1.45)
             if new_ratio < 1.0:
                 # If the ``new_ratio`` is smaller than 1.0, which means the volumes calculated is large enough,
                 # there is no need to expand the volumes.
@@ -222,8 +227,11 @@ class FinerGrid:
         self._ratio = new_ratio
 
         eulerian_strain = calculate_eulerian_strain(volumes[0], volumes)
-        vr = VolumeExpander(in_volumes=volumes, out_volumes_num=self.dense_volumes_amount, ratio=new_ratio)
-        vr.interpolate_volumes()  # As mentioned in ``VolumeExpander`` doc, call this method immediately.
+        vr = VolumeExpander(
+            in_volumes=volumes, out_volumes_num=self.dense_volumes_amount, ratio=new_ratio)
+        # As mentioned in ``VolumeExpander`` doc, call this method immediately.
+        vr.interpolate_volumes()
         strains, dense_volumes = vr.strains, vr.out_volumes
-        dense_free_energies = apply_finite_strain_fitting(eulerian_strain, free_energies, strains, self.option)
+        dense_free_energies = apply_finite_strain_fitting(
+            eulerian_strain, free_energies, strains, self.option)
         return dense_volumes, dense_free_energies, new_ratio

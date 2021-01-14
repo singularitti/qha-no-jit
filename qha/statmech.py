@@ -68,7 +68,8 @@ def subsystem_partition_function(temperature, frequency):
     return np.exp(x / 2) / (1 - np.exp(x))
 
 
-subsystem_partition_function = np.frompyfunc(subsystem_partition_function, 2, 1)
+subsystem_partition_function = np.frompyfunc(
+    subsystem_partition_function, 2, 1)
 
 
 def log_subsystem_partition_function(temperature, frequency):
@@ -88,4 +89,5 @@ def log_subsystem_partition_function(temperature, frequency):
     return x / 2 - np.log(1 - np.exp(x))
 
 
-log_subsystem_partition_function = np.frompyfunc(log_subsystem_partition_function, 2, 1)
+log_subsystem_partition_function = np.frompyfunc(
+    log_subsystem_partition_function, 2, 1)
