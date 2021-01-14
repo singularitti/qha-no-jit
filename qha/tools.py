@@ -6,14 +6,16 @@
 .. moduleauthor:: Qi Zhang <qz2280@columbia.edu>
 .. moduleauthor:: Tian Qin <qinxx197@umn.edu>
 """
-
-from typing import Callable, Optional
+from typing import Callable
+from typing import Optional
 
 import numpy as np
 
 from qha.fitting import polynomial_least_square_fitting
 from qha.grid_interpolation import calculate_eulerian_strain
-from qha.type_aliases import Matrix, Scalar, Vector
+from qha.type_aliases import Matrix
+from qha.type_aliases import Scalar
+from qha.type_aliases import Vector
 
 # ===================== What can be exported? =====================
 __all__ = [

@@ -7,14 +7,15 @@
 .. moduleauthor:: Tian Qin <qinxx197@umn.edu>
 .. moduleauthor:: Qi Zhang <qz2280@columbia.edu>
 """
-
-from typing import Optional, Tuple
+from typing import Optional
+from typing import Tuple
 
 import numpy as np
 
-from qha.fitting import (apply_finite_strain_fitting,
-                         polynomial_least_square_fitting)
-from qha.type_aliases import Matrix, Vector
+from qha.fitting import apply_finite_strain_fitting
+from qha.fitting import polynomial_least_square_fitting
+from qha.type_aliases import Matrix
+from qha.type_aliases import Vector
 from qha.unit_conversion import gpa_to_ry_b3
 
 # ===================== What can be exported? =====================

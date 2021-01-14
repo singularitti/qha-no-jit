@@ -5,7 +5,6 @@
 .. moduleauthor:: Qi Zhang <qz2280@columbia.edu>
 .. moduleauthor:: Tian Qin <qinxx197@umn.edu>
 """
-
 from typing import Optional
 
 import numpy as np
@@ -16,7 +15,10 @@ from scipy.special import logsumexp
 import qha.settings
 from qha.single_configuration import free_energy
 from qha.tools import calibrate_energy_on_reference
-from qha.type_aliases import Array4D, Matrix, Scalar, Vector
+from qha.type_aliases import Array4D
+from qha.type_aliases import Matrix
+from qha.type_aliases import Scalar
+from qha.type_aliases import Vector
 
 # ===================== What can be exported? =====================
 __all__ = ["PartitionFunction"]

@@ -5,7 +5,6 @@
    :synopsis:
 .. moduleauthor:: Qi Zhang <qz2280@columbia.edu>
 """
-
 import numpy as np
 from scipy.constants import physical_constants as pc
 
