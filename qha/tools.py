@@ -10,7 +10,6 @@
 from typing import Callable, Optional
 
 import numpy as np
-from numpy import vectorize
 
 from qha.fitting import polynomial_least_square_fitting
 from qha.grid_interpolation import calculate_eulerian_strain
@@ -38,7 +37,6 @@ def lagrange4(xs: Vector, ys: Vector) -> Callable[[float], float]:
     x0, x1, x2, x3 = xs
     y0, y1, y2, y3 = ys
 
-    @vectorize
     def f(x: float) -> float:
         """
         A helper function that only does the evaluation.
@@ -52,7 +50,7 @@ def lagrange4(xs: Vector, ys: Vector) -> Callable[[float], float]:
                (x - x0) * (x - x1) * (x - x2) / \
             (x3 - x0) / (x3 - x1) / (x3 - x2) * y3
 
-    return f
+    return np.frompyfunc(f, 1, 1)
 
 
 def lagrange3(xs: Vector, ys: Vector) -> Callable[[float], float]:
@@ -83,7 +81,6 @@ def lagrange3(xs: Vector, ys: Vector) -> Callable[[float], float]:
     x0, x1, x2 = xs
     y0, y1, y2 = ys
 
-    @vectorize
     def f(x: float) -> float:
         """
         A helper function that only does the evaluation.
@@ -95,7 +92,7 @@ def lagrange3(xs: Vector, ys: Vector) -> Callable[[float], float]:
                (x - x0) * (x - x2) / (x1 - x0) / (x1 - x2) * y1 + \
                (x - x0) * (x - x1) / (x2 - x0) / (x2 - x1) * y2
 
-    return f
+    return np.frompyfunc(f, 1, 1)
 
 
 def find_nearest(array: Vector, value: Scalar) -> int:
