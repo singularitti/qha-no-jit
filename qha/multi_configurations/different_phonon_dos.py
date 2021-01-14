@@ -124,7 +124,7 @@ class PartitionFunction:
 
         with mpmath.workprec(self.precision):
             # shape = (# of configurations, # of volumes for each configuration)
-            exp = np.vectorize(mpmath.exp)
+            exp = np.frompyfunc(mpmath.exp, 1, 1)
             return exp(-self.aligned_free_energies_for_each_configuration / (K * self.temperature))
 
     @LazyProperty
