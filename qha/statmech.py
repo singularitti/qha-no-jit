@@ -7,7 +7,6 @@
 """
 
 import numpy as np
-from numpy import vectorize
 from scipy.constants import physical_constants as pc
 
 import qha.settings
@@ -28,7 +27,6 @@ HBAR = {'ha': 100 / pc['electron volt-inverse meter relationship'][0] / pc['Hart
     qha.settings.energy_unit]
 
 
-@vectorize
 def ho_free_energy(temperature, frequency):
     """
     Calculate Helmholtz free energy of a single harmonic oscillator at a specific temperature.
@@ -50,7 +48,9 @@ def ho_free_energy(temperature, frequency):
         return 1 / 2 * hw + kt * np.log(1 - np.exp(-hw / kt))
 
 
-@vectorize
+ho_free_energy = np.frompyfunc(ho_free_energy, 2, 1)
+
+
 def subsystem_partition_function(temperature, frequency):
     """
     Calculate the subsystem partition function of a single harmonic oscillator at a specific temperature.
@@ -68,7 +68,9 @@ def subsystem_partition_function(temperature, frequency):
     return np.exp(x / 2) / (1 - np.exp(x))
 
 
-@vectorize
+subsystem_partition_function = np.frompyfunc(subsystem_partition_function, 2, 1)
+
+
 def log_subsystem_partition_function(temperature, frequency):
     """
     Calculate the natural logarithm of the subsystem partition function of a single harmonic oscillator
@@ -84,3 +86,6 @@ def log_subsystem_partition_function(temperature, frequency):
 
     x = -HBAR * frequency / (K * temperature)
     return x / 2 - np.log(1 - np.exp(x))
+
+
+log_subsystem_partition_function = np.frompyfunc(log_subsystem_partition_function, 2, 1)
