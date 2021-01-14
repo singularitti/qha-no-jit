@@ -12,8 +12,9 @@ from typing import Optional, Tuple
 
 import numpy as np
 
-from qha.fitting import polynomial_least_square_fitting, apply_finite_strain_fitting
-from qha.type_aliases import Vector, Matrix
+from qha.fitting import (apply_finite_strain_fitting,
+                         polynomial_least_square_fitting)
+from qha.type_aliases import Matrix, Vector
 from qha.unit_conversion import gpa_to_ry_b3
 
 # ===================== What can be exported? =====================
