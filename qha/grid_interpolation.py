@@ -40,7 +40,7 @@ def calculate_eulerian_strain(v0, vs):
     :param vs: A volume vector, each item of which will be calculated the Eulerian strain with respect to *v0*.
     :return: A vector of the calculated Eulerian strain.
     """
-    return 1 / 2 * ((v0 / vs) ** (2 / 3) - 1)
+    return 1 / 2 * ((v0 / vs)**(2 / 3) - 1)
 
 
 def from_eulerian_strain(v0, fs):
@@ -56,7 +56,7 @@ def from_eulerian_strain(v0, fs):
     :param fs: A vector of Eulerian strains with respect to :math:`V_0`.
     :return: A vector of calculated volume :math:`V`s.
     """
-    return v0 * (2 * fs + 1) ** (-3 / 2)
+    return v0 * (2 * fs + 1)**(-3 / 2)
 
 
 class VolumeExpander:
@@ -120,7 +120,8 @@ class VolumeExpander:
     @out_volumes_num.setter
     def out_volumes_num(self, value: int):
         if not isinstance(value, int):
-            raise TypeError("The argument *out_volumes_num* must be an integer!")
+            raise TypeError(
+                "The argument *out_volumes_num* must be an integer!")
         if value <= 0:
             raise ValueError(
                 "The argument *out_volumes_num* must be an integer larger than 0!"
@@ -175,9 +176,10 @@ class FinerGrid:
     :param order: The order of the Birch--Murnaghan finite-strain equation of state fitting.
     """
 
-    def __init__(
-        self, desired_p_min: float, dense_volumes_amount: int, order: Optional[int] = 3
-    ):
+    def __init__(self,
+                 desired_p_min: float,
+                 dense_volumes_amount: int,
+                 order: Optional[int] = 3):
         self.desired_p_min = float(desired_p_min)
         self.dense_volumes_amount = int(dense_volumes_amount)
         self.option = int(order)
@@ -187,9 +189,8 @@ class FinerGrid:
     def ratio(self) -> float:
         return self._ratio
 
-    def approach_to_best_ratio(
-        self, volumes: Vector, free_energies: Vector, initial_ratio: float
-    ) -> float:
+    def approach_to_best_ratio(self, volumes: Vector, free_energies: Vector,
+                               initial_ratio: float) -> float:
         """
         Trying to find the best volume grids based on an a very large volume grids.
 
@@ -202,9 +203,9 @@ class FinerGrid:
         vr.interpolate_volumes()
         strains, finer_volumes = vr.strains, vr.out_volumes
         eulerian_strain = calculate_eulerian_strain(volumes[0], volumes)
-        _, f_v_tmax = polynomial_least_square_fitting(
-            eulerian_strain, free_energies, strains, self.option
-        )
+        _, f_v_tmax = polynomial_least_square_fitting(eulerian_strain,
+                                                      free_energies, strains,
+                                                      self.option)
         p_v_tmax = -np.gradient(f_v_tmax) / np.gradient(finer_volumes)
         p_desire = gpa_to_ry_b3(self.desired_p_min)
         # Find the index of the first pressure value that slightly smaller than p_desire.
@@ -212,9 +213,11 @@ class FinerGrid:
         final_ratio = finer_volumes[idx] / max(volumes)
         return final_ratio
 
-    def refine_grid(
-        self, volumes: Vector, free_energies: Matrix, ratio: Optional[float] = None
-    ) -> Tuple[Vector, Matrix, float]:
+    def refine_grid(self,
+                    volumes: Vector,
+                    free_energies: Matrix,
+                    ratio: Optional[float] = None
+                    ) -> Tuple[Vector, Matrix, float]:
         """
         Get the appropriate volume grid for interpolation.
         Avoid to use a too large volume grid to obtain data, which might lose accuracy.
@@ -227,7 +230,8 @@ class FinerGrid:
         if ratio is not None:
             new_ratio: float = ratio
         else:
-            new_ratio = self.approach_to_best_ratio(volumes, free_energies[-1, :], 1.45)
+            new_ratio = self.approach_to_best_ratio(volumes,
+                                                    free_energies[-1, :], 1.45)
             if new_ratio < 1.0:
                 # If the ``new_ratio`` is smaller than 1.0, which means the volumes calculated is large enough,
                 # there is no need to expand the volumes.
@@ -245,6 +249,5 @@ class FinerGrid:
         vr.interpolate_volumes()
         strains, dense_volumes = vr.strains, vr.out_volumes
         dense_free_energies = apply_finite_strain_fitting(
-            eulerian_strain, free_energies, strains, self.option
-        )
+            eulerian_strain, free_energies, strains, self.option)
         return dense_volumes, dense_free_energies, new_ratio

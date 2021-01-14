@@ -18,24 +18,29 @@ __all__ = [
 ]
 
 K = {
-    "ha": pc["Boltzmann constant in eV/K"][0] / pc["Hartree energy in eV"][0],
-    "ry": pc["Boltzmann constant in eV/K"][0]
-    / pc["Rydberg constant times hc in eV"][0],
-    "ev": pc["Boltzmann constant in eV/K"][0],
-    "SI": pc["Boltzmann constant"][0],
+    "ha":
+    pc["Boltzmann constant in eV/K"][0] / pc["Hartree energy in eV"][0],
+    "ry":
+    pc["Boltzmann constant in eV/K"][0] /
+    pc["Rydberg constant times hc in eV"][0],
+    "ev":
+    pc["Boltzmann constant in eV/K"][0],
+    "SI":
+    pc["Boltzmann constant"][0],
 }[qha.settings.energy_unit]
 
 HBAR = {
-    "ha": 100
-    / pc["electron volt-inverse meter relationship"][0]
-    / pc["Hartree energy in eV"][0],
-    "ry": 100
-    / pc["electron volt-inverse meter relationship"][0]
-    / pc["Rydberg constant times hc in eV"][0],
-    "ev": 100 / pc["electron volt-inverse meter relationship"][0],
-    "SI": 100
-    / pc["electron volt-inverse meter relationship"][0]
-    / pc["joule-electron volt relationship"][0],
+    "ha":
+    100 / pc["electron volt-inverse meter relationship"][0] /
+    pc["Hartree energy in eV"][0],
+    "ry":
+    100 / pc["electron volt-inverse meter relationship"][0] /
+    pc["Rydberg constant times hc in eV"][0],
+    "ev":
+    100 / pc["electron volt-inverse meter relationship"][0],
+    "SI":
+    100 / pc["electron volt-inverse meter relationship"][0] /
+    pc["joule-electron volt relationship"][0],
 }[qha.settings.energy_unit]
 
 
@@ -80,7 +85,8 @@ def subsystem_partition_function(temperature, frequency):
     return np.exp(x / 2) / (1 - np.exp(x))
 
 
-subsystem_partition_function = np.frompyfunc(subsystem_partition_function, 2, 1)
+subsystem_partition_function = np.frompyfunc(subsystem_partition_function, 2,
+                                             1)
 
 
 def log_subsystem_partition_function(temperature, frequency):
@@ -100,4 +106,5 @@ def log_subsystem_partition_function(temperature, frequency):
     return x / 2 - np.log(1 - np.exp(x))
 
 
-log_subsystem_partition_function = np.frompyfunc(log_subsystem_partition_function, 2, 1)
+log_subsystem_partition_function = np.frompyfunc(
+    log_subsystem_partition_function, 2, 1)
